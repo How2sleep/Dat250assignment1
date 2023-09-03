@@ -50,34 +50,63 @@ public class App {
                     double value = Double.parseDouble(ctx.formParam("value"));
                     String fromUnit = ctx.formParam("sunit");
                     String toUnit = ctx.formParam("tunit");
-                    double inMeters;
-                    if (fromUnit.equals("in")) {
-                        inMeters = value * IN_TO_METER;
-                    } else if (fromUnit.equals("ft")) {
-                        inMeters = value * FT_TO_METER;
-                    } else if (fromUnit.equals("mi")) {
-                        inMeters = value * MI_TO_METER;
-                    } else if (fromUnit.equals("m")) {
-                        inMeters = value;
-                    } else {
-                        inMeters = Double.NaN;
-                    }
-                    double result;
-                    if (toUnit.equals("in")) {
-                        result = inMeters / IN_TO_METER;
-                    } else if (toUnit.equals("ft")) {
-                        result = inMeters / FT_TO_METER;
-                    } else if (toUnit.equals("mi")) {
-                        result = inMeters / MI_TO_METER;
-                    } else if (toUnit.equals("m")) {
-                        result = inMeters;
-                    } else {
-                        result = Double.NaN;
-                    }
+                    double result = convert(value, fromUnit, toUnit);
                     ctx.result(Double.toString(result));
                 })
                 .start(9000);
     }
+/** Converts a value between units.
+     * @param value The value to convert.
+     * @param fromUnit The unit to convert from.
+     * @param toUnit The unit to convert to.
+     * @return The converted value.
+     */
+    public static double convert (double value, String fromUnit, String toUnit) {
+        double inMeters;
+        if (fromUnit.equals("in")) {
+            inMeters = fromInches(value);
+        } else if (fromUnit.equals("ft")) {
+            inMeters = fromFeet(value);
+        } else if (fromUnit.equals("mi")) {
+            inMeters = fromMiles(value);
+        } else if (fromUnit.equals("m")) {
+            inMeters = value;
+        } else {
+            inMeters = Double.NaN;
+        }
+        double result;
+        if (toUnit.equals("in")) {
+            result = toInches(inMeters);
+        } else if (toUnit.equals("ft")) {
+            result = toFeet(inMeters);
+        } else if (toUnit.equals("mi")) {
+            result = toMiles(inMeters);
+        } else if (toUnit.equals("m")) {
+            result = inMeters;
+        } else {
+            result = Double.NaN;
+        }
+        return result;
+    }
+    /** Conversion methods*/
+    public static double fromFeet (double value) {
+        return value * FT_TO_METER;
+    }
 
+    public static double fromInches (double value) {
+        return value * IN_TO_METER;
+    }
 
+    public static double fromMiles (double value) {
+        return value * MI_TO_METER;
+    }
+    public static double toInches (double value) {
+        return value / IN_TO_METER;
+    }
+    public static double toFeet (double value) {
+        return value / FT_TO_METER;
+    }
+    public static double toMiles (double value) {
+        return value / MI_TO_METER;
+    }
 }
